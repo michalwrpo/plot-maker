@@ -1,7 +1,13 @@
 # a comment
 
-PLOT (n, y)
+PLOT 
+(n, y, color = #aa11aa, linewidth = 3.5)
+
 title = "A plot"
+
+xlabel = "time"
+ylabel = "energy"
+
 show
 
 [./testdata/in2.txt]

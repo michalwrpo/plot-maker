@@ -6,6 +6,7 @@ class Graph:
         self.y = y
         self.color = "blue"
         self.plot_type = "plot"
+        self.linewidth : float = 1
 
 class Plot:
     # def __init__(self, x, y, xlabel: str = "x", ylabel: str = "y", color: str = "blue", show: bool = True, filename: str | None = None):
@@ -34,7 +35,6 @@ class Plot:
         self.variables_values: Dict[str, List[float]] = {}
         self.xlabel = ""
         self.ylabel = ""
-        self.color = "blue"
         self.show = False
         self.filename = ""
         self.title = ""

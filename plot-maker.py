@@ -16,16 +16,21 @@ def make_plot(config: str):
             sys.exit(1)
 
     p = parser.plot_obj
-    print(p.title)
-    # print(p.variables)
-    # print(p.variables_values)
 
     for g in p.graphs:
         if g.plot_type == 'plot':
-            plt.plot(p.variables_values[g.x], p.variables_values[g.y], color=g.color)
+            plt.plot(
+                p.variables_values[g.x], 
+                p.variables_values[g.y], 
+                color=g.color,
+                linewidth=g.linewidth
+            )
 
-    # plt.xlabel(p.xlabel)
-    # plt.ylabel(p.ylabel)
+    if p.xlabel:
+        plt.xlabel(p.xlabel)
+
+    if p.ylabel:
+        plt.ylabel(p.ylabel)
 
     if p.title:
         plt.title(p.title)
