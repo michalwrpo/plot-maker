@@ -1,0 +1,12 @@
+# a comment
+
+PLOT (n, y)
+title = "A plot"
+show
+
+[./testdata/in2.txt]
+
+format
+{-n-}
+{-y-}
+end format
