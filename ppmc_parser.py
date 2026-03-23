@@ -87,6 +87,10 @@ class PPMCParser(Parser):
 
     # start of attributes
 
+    @_('SUPTITLE ASSIGN STRING')
+    def attr(self, p):
+        self.plot_obj.suptitle = p.STRING
+
     @_('TITLE ASSIGN STRING')
     def attr(self, p):
         self.plot_obj.title = p.STRING
@@ -99,6 +103,28 @@ class PPMCParser(Parser):
     def attr(self, p):
         self.plot_obj.ylabel = p.STRING
 
+    @_('XLOG')
+    def attr(self, p):
+        self.plot_obj.xlog = True
+
+    @_('YLOG')
+    def attr(self, p):
+        self.plot_obj.ylog = True
+
+    @_('SHOW')
+    def attr(self, p):
+        self.plot_obj.show = True
+
+    @_('SAVE ASSIGN STRING')
+    def attr(self, p):
+        self.plot_obj.save = True
+        self.plot_obj.out_filename = p.STRING
+
+    @_('SAVE')
+    def attr(self, p):
+        self.plot_obj.save = True
+
+
     # end of attributes
 
     @_('INT')
@@ -109,17 +135,24 @@ class PPMCParser(Parser):
     def number(self, p):
         return p.FLOAT
 
-    @_('SHOW')
-    def attr(self, p):
-        self.plot_obj.show = True
+    @_('set_file FORMAT formatting FORMAT_END data')
+    def data(self, p):
+        pass
 
-    @_('set_file FORMAT formatting FORMAT_END')
+    @_('empty')
     def data(self, p):
         pass
 
     @_('FILE')
     def set_file(self, p):
+        self.line = 0
+        self.col = 0
         self.in_data = open(p.FILE, "r").read().split('\n')
+
+        if self.plot_obj.save and self.plot_obj.out_filename == "":
+            # cut off file extension and replace it with '.png'
+            last_dot = p.FILE.rfind('.')
+            self.plot_obj.out_filename = p.FILE[:last_dot] if last_dot > -1 else p.FILE + ".png"
 
     @_('format formatting')
     def formatting(self, p):
@@ -133,6 +166,17 @@ class PPMCParser(Parser):
     def formatting(self, p):
         pass
 
+    @_('SKIP_LINES')
+    def format(self, p):
+        self.line += p.SKIP_LINES
+
+        if (self.in_data == None):
+            raise ParserException(f"Line {p.lineno}: No file has been given for the format.")
+        if (self.line >= len(self.in_data)):
+            raise ParserException(f"Line {p.lineno}: The format exceedes the length of the file.")
+
+
+
     @_('ROW_FORMAT')
     def format(self, p):
         if (self.in_data == None):
@@ -145,6 +189,7 @@ class PPMCParser(Parser):
         if (var not in self.plot_obj.variables):
             raise ParserException(f"Line {p.lineno}: Unknown variable {var} used in format.")
 
+        print(var)
         data = list(map(lambda x : float(x), self.in_data[self.line].split()))
         self.line += 1
         self.plot_obj.variables_values[var] = data

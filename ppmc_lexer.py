@@ -8,9 +8,13 @@ class PPMCLexer(Lexer):
         FORMAT,
         GRAPH, 
         SHOW,
+        SAVE,
         TITLE,
+        SUPTITLE,
         XLABEL,
         YLABEL,
+        XLOG,
+        YLOG
     }
 
     ignore = '\t '
@@ -45,6 +49,10 @@ class PPMCLexer(Lexer):
         self.push_state(PPMCFormatLexer)
         return t
 
+    @_('suptitle')
+    def SUPTITLE(self, t):
+        return t
+
     @_('title')
     def TITLE(self, t):
         return t
@@ -57,14 +65,28 @@ class PPMCLexer(Lexer):
     def YLABEL(self, t):
         return t
     
+    @_('xlog')
+    def XLOG(self, t):
+        return t
+    
+    @_('ylog')
+    def YLOG(self, t):
+        return t
+
     @_('show')
     def SHOW(self, t):
         return t
+    
+    @_(r'save|output')
+    def SAVE(self, t):
+        return t
+    
 
 
 
 class PPMCFormatLexer(Lexer):
     tokens = {
+        SKIP_LINES,
         ROW_FORMAT,
         COL_FORMAT,
         FORMAT_LINE,
@@ -76,6 +98,11 @@ class PPMCFormatLexer(Lexer):
     @_(r'\n+')
     def ignore_newline(self, t):
         self.lineno += t.value.count('\n')
+
+    @_(r'\{skip \d+\}')
+    def SKIP_LINES(self, t):
+        t.value = int(t.value[6:-1])
+        return t
 
     @_(r'\{\-.*?\-\}')
     def ROW_FORMAT(self, t):

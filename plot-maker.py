@@ -26,17 +26,30 @@ def make_plot(config: str):
                 linewidth=g.linewidth
             )
 
+    if p.suptitle:
+        plt.suptitle(p.suptitle)
+
+    if p.title:
+        plt.title(p.title)
+
     if p.xlabel:
         plt.xlabel(p.xlabel)
 
     if p.ylabel:
         plt.ylabel(p.ylabel)
 
-    if p.title:
-        plt.title(p.title)
+    if p.xlog:
+        plt.xscale('log')
+
+    if p.ylog:
+        plt.yscale('log')
+
+    if p.save:
+        plt.savefig(p.out_filename)
 
     if p.show:
         plt.show()
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

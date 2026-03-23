@@ -1,0 +1,12 @@
+PLOT (x, y)
+
+ylog
+
+show
+
+[./testdata/in4.txt]
+
+format
+{-x-}
+{-y-}
+end format
